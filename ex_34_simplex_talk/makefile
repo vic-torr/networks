@@ -19,10 +19,8 @@ all: simplex_talk_client simplex_talk_server
 
 run-s: simplex_talk_server
 		./simplex_talk_server
-
 run: simplex_talk_server simplex-talk
 		echo ${MESSAGE} | ./simplex_talk_client ${HOST}
-
 simplex-talk: simplex-talk.c
 		cc -o $@ $<
 

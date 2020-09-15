@@ -25,19 +25,19 @@ comportamento do TCP.
 #define MAX_LINE 256
 
 int main(int argc, char * argv[]) {
-        struct sockaddr_in sin ;
+        struct sockaddr_in sin ; //socket
         char buf[MAX_LINE] ;
         int len ;
         int s, new_s ;
 
         // mount data structure of addreress
         bzero((char *)&sin,sizeof(sin)) ;
-        sin.sin_family = AF_INET ;
+        sin.sin_family = AF_INET ;  //ipv4
         sin.sin_addr.s_addr = INADDR_ANY ;
         sin.sin_port = htons( SERVER_PORT) ;
 
         // prepare passive open
-        if ( (s = socket(PF_INET,SOCK_STREAM,0)) < 0) {
+        if ( (s = socket(PF_INET,SOCK_DGRAM,0)) < 0) {  // for udp use SOCK_DGRAM, 0 for default protocol
                 perror("simplex-talk: socket") ;
                 exit(1) ;
         }
@@ -45,18 +45,20 @@ int main(int argc, char * argv[]) {
                 perror("simplex-talk: bind") ;
                 exit(1) ;
         }
-        listen( s, MAX_PENDING ) ;
-        // wait connection, then receive and print text
-        while(1) {
-                if ( (new_s = accept(s,(struct sockaddr *)&sin,
-                        (socklen_t *) &len) ) < 0 ) {
-                        perror("simplex-talk: accept") ;
-                        exit(1) ;
-                }
-                while ( (len = recv(new_s, buf, sizeof(buf), 0 )) )
-                        fputs(buf, stdout) ;
-                close(new_s) ;
+
+        // receive and print text
+
+        while ( (len = recv(s, buf, sizeof(buf), 0 )) ){
+                if( len >0 )
+                    fputs(buf, stdout) ;
+
+                // fgets(buf, sizeof(buf), stdin);
+                // buf[MAX_LINE-1] = '\0' ;
+                // len = strlen(buf) + 1 ;
+                // send(s, buf, len, 0 ) ;
         }
+        close(new_s) ;
+
 }
 
 
