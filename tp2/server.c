@@ -23,7 +23,7 @@ int main(int argc, char **argv){
     /*Create socket UDP*/
     s = socket(AF_INET, SOCK_DGRAM, 0);
     if(s<0) {
-        perror("Erro na abertura do socket")};
+        perror("Erro na abertura do socket");};
     opt=1;
     setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (const void*)&opt, sizeof(int));
 
@@ -35,7 +35,7 @@ int main(int argc, char **argv){
 
     /*socket bind*/
     if(bind(s,(struct sockaddr *)&server, sizeof(server))<0) {
-        perror("Falha no bind.")};
+        perror("Falha no bind.");};
 
     clen = sizeof(client);
 
@@ -46,12 +46,12 @@ int main(int argc, char **argv){
         /*Receive*/
         n=recvfrom(s,buf,N_BYTES,0,(struct sockaddr*)&client,&clen);
         if(n == -1){
-            perror("ERROR in recvfrom")};
+            perror("ERROR in recvfrom");};
 
         /*Send*/
-        n=sendto(s,buf,strlen(buf),0,(structsockaddr∗)&client,clen);
+        n=sendto(s,buf,strlen(buf),0,(struct sockaddr*)&client,clen);
         if(n == -1){
-            perror("ERROR in sendto")};
+            perror("ERROR in sendto");};
     }
 }
 

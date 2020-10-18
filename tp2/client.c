@@ -20,10 +20,10 @@ char * gen_str(int msg_size){
     char * msg;
     msg = malloc(sizeof(char) * msg_size);
     int i;
-    for(i=0;i<msg_size − 1;i++){
+    for(i=0;i<msg_size - 1;i++){
         msg[i]='a';
     }
-    msg[msg_size − 1] = '\0';
+    msg[msg_size - 1] = '\0';
     return msg;
 }
 
@@ -70,26 +70,26 @@ int main(int argc,char * argv[]){
         host=argv[1];
     }
     else{
-        fprintf(stderr, "Uso: simplex−talk host \n");
+        fprintf(stderr, "Uso: simplex-talk host \n");
         exit(1);
     }
 
     /*Create socket*/
     s=socket(AF_INET,SOCK_DGRAM,0);
     if(s<0){
-        perror("simplex−talk: socket");
+        perror("simplex-talk: socket");
         exit(1);
     }
 
     /*Get host name and data structure*/
     server=gethostbyname(host);
     if(server==NULL){
-        fprintf(stderr,"simplex−talk: unknown host: %s \n",host);
+        fprintf(stderr,"simplex-talk: unknown host: %s \n",host);
         exit(1);
     }
     bzero((char *)&sin, sizeof(sin));
     sin.sin_family = AF_INET;
-    bcopy((char *)server−>h_addr, (char*)&sin.sin_addr.s_addr, server−>h_length);
+    bcopy((char *)server->h_addr, (char*)&sin.sin_addr.s_addr, server->h_length);
     sin.sin_port = htons(SERVER_PORT);
     server_len=sizeof(sin);
 
@@ -145,8 +145,8 @@ int main(int argc,char * argv[]){
 
                 /*Lantecy in ms*/
                 gettimeofday(&t2, NULL);
-                elapsedTime = (t2.tv_sec − t1.tv_sec) * 1000.0;
-                elapsedTime += (t2.tv_usec − t1.tv_usec) / 1000.0;
+                elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;
+                elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;
                 aux_lat[j] = elapsedTime / n_it;
             }
 
