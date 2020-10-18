@@ -30,7 +30,7 @@ char * gen_str(int msg_size){
 /*Save results in file*/
 int save_to_file(unsigned n,unsigned m,double mat[n][m],double mat2[n],double mat3[n]){
 FILE * pFile;
-pFile = fopen("result.txt","w");
+pFile = fopen("result.csv","w");
 if(pFile!=NULL)
 {
     fprintf(pFile,"tamanho(bytes),latencia(s),vazao(bps), Lost Packages");
