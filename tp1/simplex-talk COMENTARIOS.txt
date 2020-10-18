@@ -1,0 +1,12 @@
+Peterson's Book - simplex-talk code
+
+Comentários:
+
+- AF_INET e PF_INET são sinônimos
+
+- Usar porta 54321, ao invés da 5432: #define SERVER_PORT 54321
+
+- Código do server não inicializa len antes de chamar o accept. Logo, acrescentar: len = sizeof(sin);
+
+- No código do cliente, para uso em rede local onde não há registro de nomes DNS para as estações, modificar as linhas do código que leem o nome fornecido pelo usuário e consultam o DNS. Modifique para ler o endereço IP em dotted notation e converter para binário.
+
