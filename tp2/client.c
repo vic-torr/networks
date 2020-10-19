@@ -182,8 +182,8 @@ int main(int argc, char *argv[])
         aux_lat = elapsedTime / n_it;
 
         // Measures avarage
-        latency_time = aux_lat;
-        vazao[size_it] = (latencia[size_it][0] * 8) / latency_time[size_it];
+        latency_time[i] = aux_lat;
+        vazao[i ] = (latencia[size_it][0] * 8) / latency_time[size_it];
         contaPacote[size_it] = conta;
         printf("\n MeanLatency: %.f miliseconds \n", latency_time[size_it]);
         printf("\n Mean Throughput: %f bps\n", vazao[size_it]);
