@@ -22,7 +22,7 @@ char* generate_message(int size)
     message = malloc(sizeof(char) * size);
     for (int i = 0; i < size - 1; i++)
     {
-        message[i] = (' ' + ((90 << i) | 'a' >> i ^ i << 2) % 90); // pseudorandom character
+        message[i] = ('a' + ((i>2) | 'a' >> i ^ i << 2) % 26); // pseudorandom character
     }
     message[size - 1] = '\0';
     return message;

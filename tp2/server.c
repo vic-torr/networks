@@ -8,7 +8,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#define N_BYTES 32000
+#define N_BYTES 33000
 #define PORT 33333
 
 int main(int argc, char **argv)
@@ -62,5 +62,6 @@ int main(int argc, char **argv)
         {
             perror("ERROR in sendto");
         };
+        printf("%s\n",buf);
     }
 }
