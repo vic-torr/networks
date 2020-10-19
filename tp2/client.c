@@ -15,7 +15,6 @@
 #define MAX_LINE 256
 #define N_BYTES 32000
 
-
 // Save results in file
 int save_to_file(unsigned n, unsigned m, float mat[n][m], float mat2[n], float mat3[n], char *file_name)
 {
@@ -43,12 +42,11 @@ char *generate_message(int size)
     message = malloc(sizeof(char) * size);
     for (int i = 0; i < size - 1; i++)
     {
-        message[i] = 'a'+(i*17)%26;
+        message[i] = chat((' ' + ((90 << i) | 'a' >> i ^ i << 2) % 90)) // pseudorandom character
     }
     message[size - 1] = '\0';
     return message;
 }
-
 
 int main(int argc, char *argv[])
 {
@@ -62,13 +60,15 @@ int main(int argc, char *argv[])
     struct sockaddr_in sin;
     int status;
     fd_set read_sd_set;
-    float latencia[43][2] = {{1, 0}, {100, 0}, {200, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {1000, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {100, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {100, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {100, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {100, 0}};
-    int latency_packet_size[20];
-    float latency_time[20];
-    float vazao[43];
-    float contaPacote[43];
+    float latencia[size_array][2] = {{1, 0}, {100, 0}, {200, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {1000, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {100, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {100, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {100, 0}, {300, 0}, {400, 0}, {500, 0}, {600, 0}, {700, 0}, {800, 0}, {900, 0}, {100, 0}};
+    int latency_packet_size[32];
+    float latency_time[32];
+    int throughput_packet_size[32];
+    float throughput_time[32];
+    float vazao[size_array];
+    float contaPacote[size_array];
     int it;
-        // Variables
+    // Variables
     float aux_lat; //Latency
     int size, size_it;
     int i, j;
@@ -93,9 +93,10 @@ int main(int argc, char *argv[])
     puts(file_name);
 
     // Start latency
-    for (it = 0; it < 32; it++)
+    size_t size_array = sizeof(a) / sizeof(int);
+    for (it = 0; it < size_array; it++)
     {
-        latencia[it + 11][0] = (it + 1) * pow(2, 10);
+        latency_packet_size[it] = i * 50
     }
 
     // Get IP address
@@ -131,14 +132,12 @@ int main(int argc, char *argv[])
     sin.sin_port = htons(SERVER_PORT);
     server_len = sizeof(sin);
 
-
-
     // Test for each package size
-    for (size_it = 0; size_it < 43; size_it++)
+    for (size_it = 0; size_it < size_array; size_it++)
     {
 
         // Create message
-        size = latencia[size_it][0];
+        size = latency_packet_size[size_it - 1];
         char *buf = generate_message(size);
         printf("\n\n Packet Size: %d Bytes", size);
 
@@ -155,7 +154,7 @@ int main(int argc, char *argv[])
             // Send Message
             count = sendto(s, buf, strlen(buf), 0, (struct sockaddr *)&sin, server_len);
             if (count < 0)
-                perror("Erro no envio");
+                perror("Transmiting error.");
             FD_ZERO(&read_sd_set);
             FD_SET(s, &read_sd_set);
             tv.tv_sec = 1;
@@ -167,7 +166,7 @@ int main(int argc, char *argv[])
                 // Get Message
                 count = recvfrom(s, buf, strlen(buf), 0, (struct sockaddr *)&sin, &server_len);
                 if (count < 0)
-                    perror("Erro na recepcao");
+                    perror("Receiving error.");
             }
             else
             {
@@ -183,14 +182,30 @@ int main(int argc, char *argv[])
         aux_lat = elapsedTime / n_it;
 
         // Measures avarage
-        latencia[size_it][1] = aux_lat;
-        vazao[size_it] = (latencia[size_it][0] * 8) / latencia[size_it][1];
+        latency_time = aux_lat;
+        vazao[size_it] = (latencia[size_it][0] * 8) / latency_time[size_it];
         contaPacote[size_it] = conta;
-        printf("\n MeanLatency: %.f miliseconds \n", latencia[size_it][1]);
+        printf("\n MeanLatency: %.f miliseconds \n", latency_time[size_it]);
         printf("\n Mean Throughput: %f bps\n", vazao[size_it]);
 
         // Save Results
-        save_to_file(43, 2, latencia, vazao, contaPacote, file_name);
+        save_to_file(size_array, 2, latency_time, vazao, contaPacote, file_name);
+
+        FILE *pFile;
+
+        pFile = fopen(file_name, "w");
+
+        puts(file_name);
+        if (pFile != NULL)
+        {
+            fprintf(pFile, "tamanho(bytes),latencia(s),vazao(bps), Lost packet");
+            int i;
+            for (i = 0; i < n; i++)
+            {
+                fprintf(pFile, "\n %f, %f, %f, %f", mat[i][0], mat[i][1], mat2[i], mat3[i]);
+            }
+            fclose(pFile);
+        }
         free(buf);
     }
     close(s);
