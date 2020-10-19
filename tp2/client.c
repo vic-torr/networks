@@ -98,9 +98,9 @@ int main(int argc, char *argv[])
 
     // Get packet size
     size_t size_array = sizeof(packet_size) / sizeof(int);
-    for (int i = 0; i < 31; i++) // 0 32 64 96 ... 992
+    for (int i = 0; i < 32; i++) // 1 32 64 96 ... 960
     {
-        packet_size[i] = i * 32;
+        packet_size[i] = i * 32 + !i;  // initial value packet_size[0]= 1
         //printf("%d\n",packet_size[i]);
     }
     for (int i = 31; i < 64; i++) // 1024 2048 3072 ... 32700
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
     int size = 0;
     // Test for each package size
 
-    for (int i_pkt = 0; i_pkt < size_array; i_pkt++)
+    for (int i_pkt = 0; i_pkt < TOTAL_ITER; i_pkt++)
     {
         //printf("%d, %d\n", packet_size[i_pkt], i_pkt);
         // Create message
