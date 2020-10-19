@@ -13,16 +13,17 @@
 
 #define SERVER_PORT 33333
 #define SIZE_ARR 64
-#define TOTAL_ITER 100000
+#define TOTAL_ITER 1000
 
 // Create Message
-char* generate_message(int size)
+char* generate_message(int size, int seed)
 {
     char *message;
     message = malloc(sizeof(char) * size);
     for (int i = 0; i < size - 1; i++)
     {
-        message[i] = ('a' + ((i>2) | 'a' >> i ^ i << 2) % 26); // pseudorandom character
+        message[i] = 'a'*(i%2) + 'A'*(!(i%2)) +(((seed<<2) | ~i << 3 ^ (i << 2) | seed ^ i%26) % 26);
+          // pseudorandom character
     }
     message[size - 1] = '\0';
     return message;
@@ -115,7 +116,7 @@ int main(int argc, char *argv[])
         //printf("%d, %d\n", packet_size[i_pkt], i_pkt);
         // Create message
         size = packet_size[i_pkt];
-        char *buf = generate_message(size);
+        char *buf = generate_message(size,i_pkt);
         //printf("\n\n Packet Size: %d Bytes", size);
 
         // Start lost packet count
